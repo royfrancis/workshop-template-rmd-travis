@@ -7,6 +7,7 @@
 set -e
 
 # install r dependencies
+Rscript -e 'install.packages("yaml")'
 Rscript -e 'install.packages(yaml::read_yaml("_site.yml")$packages$packages_cran_repo)'
 Rscript -e 'install.packages(yaml::read_yaml("_site.yml")$packages$packages_cran_student)'
 Rscript -e 'tryCatch({BiocManager::install(yaml::read_yaml("_site.yml")$packages$packages_bioc_repo)'
