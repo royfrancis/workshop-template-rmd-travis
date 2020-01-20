@@ -20,9 +20,6 @@ r: 3.6.1
 repos:
  CRAN: https://cloud.r-project.org
 
-cache:
-    packages: true
-
 git:
  depth: 3
 
@@ -33,3 +30,6 @@ script:
  - chmod +x deploy.sh
  - bash deploy.sh
 
+cache:
+ directories:
+  - /home/travis/R/Library

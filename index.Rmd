@@ -19,7 +19,7 @@ output:
 
 <div class="col-md-12 flex-box">
 <p class="landing-title">
-<span style="display:block;">Rmarkdown based website template</span>
+<span style="display:block;">Rmarkdown website template</span>
 <span style="display:block;">for workshops</span>
 </p>
 </div>

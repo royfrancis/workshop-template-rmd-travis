@@ -11,7 +11,7 @@ This repo is a template for Rmarkdown-driven workshop website that uses Travis-C
 |.travis.yml|yml|Travis-CI config|
 |deploy.sh|sh|Travis-CI script|
 |README.md|md|This document|
-|DESCRIPTION|-|R packages for Travis CI|
+|DESCRIPTION|-|Travis-CI R build config|
 |LICENSE|-|Repo usage license|
 
 ### Workshop content files
@@ -96,19 +96,17 @@ If the contents are also updated, further changes are required.
 9. Update **home_content.Rmd**
     - Lists all materials organised by related topics
     - Optionally includes extra materials not under schedule
-10. Update **DESCRIPTION**
-    - All R packages used must be listed. This is used by Travis-CI for rendering output
-11. Update R packages in **`_site.yml`**.
-12. Update the repo's **README.md** if needed
+10. Update R packages in **`_site.yml`**.
+11. Update the repo's **README.md** if needed
     - Check year in the bottom
 
 ### Create a new workshop
 
 If a new workshop repo is created using this template, the following changes also apply.
 
-13. Enable that GitHub repo in Travis-CI and create an environment variable `GITHUB_TOKEN`
-14. Change repo and badge links in **README.md**
-15. Change `href` in **`_site.yml`**
+12. Enable that GitHub repo in Travis-CI and create an environment variable `GITHUB_TOKEN`
+13. Change repo and badge links in **README.md**
+14. Change `href` in **`_site.yml`**
 
 These files most likely need not be changed: **.travis.yml**, **deploy.sh**, **LICENSE** and the directory **assets**.
 
@@ -167,12 +165,11 @@ Overview of the repo. The source content is maintained in the master branch. Las
 
 ### Travis-CI
 
-When the committed changes are pushed to GitHub, Travis-CI automatically runs to render the output. The `.travis.yml` config file is used to build a linux container where R and necessary linux dependencies are installed. Then the R packages described in `DESCRIPTION` are installed. When completed, the `deploy.sh` script is executed. The first Travis build can take up to 30 mins or more depending on the number of R packages. Subsequent builds take a few minutes depending on the changes because caching is enabled.
+When the committed changes are pushed to GitHub, Travis-CI automatically runs to render the output. The `.travis.yml` config file is used to build a linux container where R and necessary linux dependencies are installed. When completed, the `deploy.sh` script is executed. The first Travis build can take up to 30 mins or more depending on the number of R packages. Subsequent builds take a few minutes depending on the changes because caching is enabled for R packages.
 
 ### deploy.sh script
 
-The `deploy.sh` script creates a new directory specified under `output_dir` in `_site.yml`. And then render the whole website into it by `rmarkdown::render_site()`. The details of this described below. When the rendering is completed, the contents of gh-pages branch is pulled down to a folder named `tmprepo`. The existence of `output_dir` in `tmprepo` is checked. If already present, it is deleted. The `output_dir` folder is copied into `tmprepo`. Lastly, a list of all folders inside `tmprepo` is added to an index file called `index.md`. This will serve as the root of gh-pages. Finally, all files are added and committed to git and pushed to the gh-pages branch. Git has permission to push to gh-pages due to Travis environment variable `GITHUB_TOKEN`.
-
+The `deploy.sh` first installs R packages described in `_site.yml`. It then creates a new directory specified under `output_dir` in `_site.yml`. And then render the whole website into it by `rmarkdown::render_site()`. The details of this described below. When the rendering is completed, the contents of gh-pages branch is pulled down to a folder named `tmprepo`. The existence of `output_dir` in `tmprepo` is checked. If already present, it is deleted. The `output_dir` folder is copied into `tmprepo`. Lastly, a list of all folders inside `tmprepo` is added to an index file called `index.md`. This will serve as the root of gh-pages. Finally, all files are added and committed to git and pushed to the gh-pages branch. Git has permission to push to gh-pages due to Travis environment variable `GITHUB_TOKEN`.
 
 ### render_site() function
 
