@@ -6,6 +6,14 @@
 
 set -e
 
+# install r dependencies
+Rscript -e 'install.packages(yaml::read_yaml("_site.yml")$packages$packages_cran_repo)'
+Rscript -e 'install.packages(yaml::read_yaml("_site.yml")$packages$packages_cran_student)'
+Rscript -e 'tryCatch({BiocManager::install(yaml::read_yaml("_site.yml")$packages$packages_bioc_repo)'
+Rscript -e 'tryCatch({BiocManager::install(yaml::read_yaml("_site.yml")$packages$packages_bioc_student)'
+Rscript -e 'devtools::install_github(yaml::read_yaml("_site.yml")$packages$packages_github_repo)'
+Rscript -e 'devtools::install_github(yaml::read_yaml("_site.yml")$packages$packages_github_student)'
+
 # get repo url, create new url with token
 url_git=$(git config --get remote.origin.url)
 echo "Repo: $url_git"

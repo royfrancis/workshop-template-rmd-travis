@@ -1,6 +1,6 @@
-# workshop-template-rmd [![travis-build](https://travis-ci.com/nbisweden/workshop-template-rmd.svg?branch=master)](https://travis-ci.com/nbisweden/workshop-template-rmd)
+# workshop-template-rmd-travis [![travis-build](https://travis-ci.org/royfrancis/workshop-template-rmd-travis.svg?branch=master)](https://travis-ci.org/royfrancis/workshop-template-rmd-travis)
 
-This repo is a template for Rmarkdown-driven workshop website. The rendered view of this repo is available [here](https://nbisweden.github.io/workshop-template-rmd/).
+This repo is a template for Rmarkdown-driven workshop website that uses Travis-CI for automated rendering. The rendered view of this repo is available [here](https://royfrancis.github.io/workshop-template-rmd-travis/).
 
 ## File descriptions
 ### Repo related files
@@ -28,7 +28,7 @@ This repo is a template for Rmarkdown-driven workshop website. The rendered view
 |lab_topic.Rmd|Rmd/md|Lab files for topics|
 |assets|Folder|Shared assets|
 |data|Folder|Shared data|
-|images|Folder|External images|
+|other|-|Other files can include pdf, pptx etc|
 
 ## Updating
 
@@ -44,7 +44,7 @@ If this repo is updated for a different date and location, this is minimum chang
     - **Set argument `output_dir:` to a year-month (YYMM) combination like 1908**
     - Set `uppmax_project` if needed. This is used in **home_precourse.Rmd**
     - Check arguments `name:` and `title:`
-    - Check `location:`
+    - Check `location:`. This affects details displayed in **home_info.Rmd**.
 2. Update **index.Rmd**
     - Check `title:` and `subtitle:`
     - Check instructions, descriptions and links
@@ -56,7 +56,7 @@ If this repo is updated for a different date and location, this is minimum chang
     - Rows can be freely added or removed
     - Set date, room, dur (in min), topic and person as needed
     - *date*: Full date for each day in format dd/mm/yyyy. Missing/empty cells are filled down automatically
-    - *room*: Room number for the workshop. Missing/empty cells are filled down automatically
+    - *room*: (Optional) Room number for the workshop. Missing/empty cells are filled down automatically
     - *dur*: Duration for the topic in minutes
     - *topic*: Topic name (Keep it short)
     - *teacher*: Name of the person covering the topic
@@ -77,23 +77,25 @@ If this repo is updated for a different date and location, this is minimum chang
 
 If the contents are also updated, further changes are required.
 
-7. Update or create new **slide_** Rmd files
+7. Update or create new **slide_** files
     - Presentation material
-    - Must be an Rmd file with custom YAML header
-    - External data and images can be added to folders data and images
+    - This can be Rmd, PDF, pptx etc.
+    - If Rmd, it must use custom YAML header (See an example slide)
+    - External data can be added to folders data and images
+    - Do not create .md and .Rmd files with same name as they both get converted to .html files
 8. Update or create new **lab_** Rmd or md files
     - Lab material
     - Can be Rmd or md
-    - Simple YAML header with `title`,`subtitle` and `author` is sufficient
-    - External data and images can be added to folders data and images
+    - Simple YAML header with `title`, and/or `subtitle` `author` is sufficient
+    - If table-of-contents is to be hidden, the YAML must be modified. See formatting tips below.
+    - External data can be added to the folders **data**
     - Do not create .md and .Rmd files with same name as they both get converted to .html files
 
-> The `assets` directory contains css styles, headers, footers, logos etc. If you are using images in your .Rmd file, place them in the directory `images` and refer to them using relative path like `![](./images/image.jpg)`. Images generated in R during rendering of the .Rmd file is automatically handled. If you have data (tsv, csv, txt text files, .Rds files), place them inside the directory `data` and read them using relative path `x <- read.delim("./data/table.txt")`. Do not use paths that link outside of the project environment.
+> The `assets` directory contains css styles, headers, footers, logos etc. If you are using images in your .Rmd file, place them in the directory `data/topic` and refer to them using relative path like `![](./data/topic/image.jpg)`. Images generated in R during rendering of the .Rmd file is automatically handled. If you have data (tsv, csv, txt text files, .Rds files), place them inside the directory `data/topic` and read them using relative path `x <- read.delim("./data/topic/table.txt")`. Do not use paths that link outside of the project environment.
 
-9. Update **home_lab.Rmd**
-    - Lists all lab materials organised by related topics
-    - Includes lab materials under schedule
-    - Optionally includes extra lab materials not under schedule
+9. Update **home_content.Rmd**
+    - Lists all materials organised by related topics
+    - Optionally includes extra materials not under schedule
 10. Update **DESCRIPTION**
     - All R packages used must be listed. This is used by Travis-CI for rendering output
 11. Update R packages in **`_site.yml`**.
@@ -124,7 +126,9 @@ Once the source files are pushed to GitHub, it is automatically rendered to the 
 
 ### Formatting tips
 
-- For `home_` or `lab_` Rmd files, the table of contents can be turned off.
+All .Rmd and .md files by default take the render arguments from `_site.yml` specified under `output: bookdown::html_document2`. The CSS style used is that from the default bootstrap as well as **lab.css**. YAML instructions within each .Rmd or .md file can be used to override the defaults. It is not always necessary to used .Rmd files. .md files are fine to use as long as R related functionality is not needed. The slides for example do not use the default template at all. In fact it completely uses a different output format `moon_reader` and styles from **style.css**.
+
+- For `home_` or `lab_` Rmd files, the table of contents can be turned off by adding the below to YAML.
 
 ```
 output:
@@ -140,6 +144,13 @@ output:
     number_sections: false
 ```
 
+- To enable accordion tabs (for hidden answers), block titles and fontawesome, you need to add this bit AFTER the YAML.
+
+````
+```{r,child="assets/header-lab.Rmd"}
+```
+````
+
 ## Local rendering
 
 For local rendering, run `rmarkdown::render_site()` in the project directory. This renders all Rmd and md files to generate the HTML files and all other necessary files (including the assets, images and data directories) and moves them into a directory specified under `output_dir` in **`_site.yml`**. Open `output_dir/index.html` to start. Remove this directory after use. **DO NOT** commit and push this output directory to GitHub.
@@ -150,7 +161,7 @@ For testing purposes, you can run `rmarkdown::render("bla.Rmd")` on individual R
 
 ## How it all works
 
-![](images/versioning.png)
+![](data/common/versioning.png)
 
 Overview of the repo. The source content is maintained in the master branch. Last edit for each workshop is tagged as such **v1911** denoting YYMM. The rendered material is maintained on the gh-pages branch under separate folders. These folder have the same format YYMM.
 
