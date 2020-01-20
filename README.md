@@ -151,7 +151,9 @@ output:
 
 ## Local rendering
 
-For local rendering, run `rmarkdown::render_site()` in the project directory. This renders all Rmd and md files to generate the HTML files and all other necessary files (including the assets, images and data directories) and moves them into a directory specified under `output_dir` in **`_site.yml`**. Open `output_dir/index.html` to start. Remove this directory after use. **DO NOT** commit and push this output directory to GitHub.
+For local rendering, you need to have R installed on your system. R dependencies listed in `site.yml` under **packages_cran_repo** and **packages_bioc_repo** need to be installed. And then any R packages pertaining to your particular Rmd file(s) (if needed) must be installed.
+
+Run `rmarkdown::render_site()` in the project directory. This renders all Rmd and md files to generate the HTML files and all other necessary files (including the assets, images and data directories) and moves them into a directory specified under `output_dir` in **`_site.yml`**. Open `output_dir/index.html` to start. Remove this directory after use. **DO NOT** commit and push this output directory to GitHub.
 
 For testing purposes, you can run `rmarkdown::render("bla.Rmd")` on individual Rmd/md files. This is a time-saver as the whole website need not be rendered just to preview this one file.
 
@@ -161,7 +163,7 @@ For testing purposes, you can run `rmarkdown::render("bla.Rmd")` on individual R
 
 ![](data/common/versioning.png)
 
-Overview of the repo. The source content is maintained in the master branch. Last edit for each workshop is tagged as such **v1911** denoting YYMM. The rendered material is maintained on the gh-pages branch under separate folders. These folder have the same format YYMM.
+The source content is maintained in the master branch. The source gets a new commit id anytime new content is pushed. The rendered material is maintained on the gh-pages branch under separate folders. These folders have the format YYMM. The contents of this folder is overwritten with a new push unless the directory name is changed (*output_dir* in `_site.yml`).  For convenience, last commit in the master branch for each workshop can be tagged as such **v1911** denoting YYMM. This can be used to easily connect a folder on gh-pages to the commit ID of the source code that produced it.
 
 ### Travis-CI
 
@@ -173,7 +175,7 @@ The `deploy.sh` first installs R packages described in `_site.yml`. It then crea
 
 ### render_site() function
 
-This function uses the information inside the config file `_site.yml`. The top navigation menu is described here. The default output style for all Rmd/md documents are specified under `output:`. Note that this described custom CSS style from `assets/labs.css` and custom footer from `assets/footer-lab.html`. If `output:` is specified under individual Rmd file, it overrides the default in `_site.yml`. The rendered output will all be moved to location specified under `output_dir`.
+This function uses the information inside the config file `_site.yml`. The top navigation menu is described here. The default output style for all Rmd/md documents are specified under `output:`. Note that this described custom CSS style from `assets/labs.css` and custom footer from `assets/footer-lab.html`. If `output:` is specified within individual Rmd files, it overrides the default in `_site.yml`. The rendered output will automatically be moved to location specified under `output_dir`.
 
 ---
 
